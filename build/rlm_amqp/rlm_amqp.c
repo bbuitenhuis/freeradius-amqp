@@ -29,8 +29,8 @@ RCSID("$Id$")
 #include <freeradius-devel/rad_assert.h>
 
 #include <json-c/json.h>
-#include <amqp.h>
-#include <amqp_tcp_socket.h>
+#include <rabbitmq-c/amqp.h>
+#include <rabbitmq-c/tcp_socket.h>
 #include "utils.h"
 
 #include <sys/time.h>
@@ -268,7 +268,10 @@ static void handle_amqp(void *instance, REQUEST *request, char const *evt) {
 				} else if (item_vp->da->type == PW_TYPE_INTEGER) {
 					json_object_object_add(data, token,
 							json_object_new_int(item_vp->vp_integer));
-				}
+				} else if (item_vp->da->type == PW_TYPE_IPV4_ADDR) {
+                                        json_object_object_add(data, token,
+                                                        json_object_new_int(item_vp->vp_ipaddr));
+                                }
 
 				found = 1;
 			}
